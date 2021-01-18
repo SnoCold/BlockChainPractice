@@ -112,6 +112,44 @@ const syncWithRootState = () => {
     })
 }
 
+const walletFoo = new Wallet()
+const wallerBar = new Wallet()
+
+const generateWallerTransaction = ({ wallet, recipient, amount }) => {
+    const transaction = wallet.createTransaction({
+        recipient, amount, chain: blockchain.chain
+    })
+
+    transactionPool.setTransaction(transaction)
+}
+
+const walletAction = () => generateWallerTransaction({
+    wallet, recipient: walletFoo.publicKey, amount: 5
+})
+
+const walletFooAction = () => generateWallerTransaction({
+    wallet: walletFoo, recipient: wallerBar.publicKey, amount: 10
+})
+
+const walletBarAction = () => generateWallerTransaction({
+    wallet: wallerBar, recipient: wallet.publicKey, amount: 15
+})
+
+for (let i = 0; i < 10; i++) {
+    if (i % 3 === 0) {
+        walletAction();
+        walletFooAction();
+    } else if (i % 3 === 1) {
+        walletAction();
+        walletBarAction();
+    } else {
+        walletFooAction();
+        walletBarAction();
+    }
+
+    transactionMiner.mineTransactions()
+}
+
 let PEER_PORT
 
 if (process.env.GENERATE_PEER_PORT === 'true') {
