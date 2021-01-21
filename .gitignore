@@ -4,3 +4,4 @@ dist
 .fake
 .ionide
 .DS_Store
+.lsp
